@@ -8,7 +8,7 @@ app.use(express.static("public"));
 
 // PostgreSQL connection
 const pool = new Pool({
-  connectionString: 'postgresql://portforio_database_3hl7_user:lMjAufrzzNPVffHk0Fbg75BGpbHNlZ1G@dpg-d0hmmlmuk2gs73eogolg-a.oregon-postgres.render.com/portforio_database_3hl7',
+  connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false
   }
