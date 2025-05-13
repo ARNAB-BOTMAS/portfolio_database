@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Portfolio Overview</title>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <h1>My Portfolio</h1>
+
+  <div class="profile-container" id="profile">
+    <h2>Profile</h2>
+    <p>Loading profile...</p>
+  </div>
+
+  <nav>
+    <button onclick="loadSection('skills')">Show Skills</button>
+    <button onclick="loadSection('education')">Show Education</button>
+    <button onclick="loadSection('projects')">Show Projects</button>
+    <button onclick="loadSection('experience')">Show Experience</button>
+  </nav>
+
+  <div class="section" id="skills"></div>
+  <div class="section" id="education"></div>
+  <div class="section" id="projects"></div>
+  <div class="section" id="experience"></div>
+
+  <!-- Add/Edit Modal -->
+  <div id="addModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle">Add Data</h2>
+      <form id="addForm">
+        <div id="formFields"></div>
+        <button type="submit" class="form-btn">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Profile Edit Modal -->
+  <div id="profileModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeProfileModal()">&times;</span>
+      <h2>Edit Profile</h2>
+      <form id="profileForm">
+        <input type="text" name="name" class="form-input" placeholder="Name" required>
+        <input type="text" name="position" class="form-input" placeholder="Position" required>
+        <input type="email" name="email" class="form-input" placeholder="Email" required>
+        <input type="text" name="address" class="form-input" placeholder="Address" required>
+        <textarea name="about_me" class="form-input" placeholder="About Me" required></textarea>
+        <input type="text" name="resume_link" class="form-input" placeholder="Resume Link" required>
+        <input type="text" name="profile_picture" class="form-input" placeholder="Profile Picture URL" required>
+        <input type="text" name="about_me_picture" class="form-input" placeholder="About Me Picture URL" required>
+        <button type="submit" class="form-btn">Update Profile</button>
+      </form>
+    </div>
+  </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
