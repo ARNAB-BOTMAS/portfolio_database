@@ -18,7 +18,7 @@ const pool = new Pool({
   }
 });
 
-app.get('/create', async (req, res) => {
+app.get('/', async (req, res) => {
   // Profile Detail Table (replaces Personal_Image)
   const createProfileDetailTable = `
     CREATE TABLE IF NOT EXISTS Profile_Detail (
@@ -114,7 +114,8 @@ app.get('/create', async (req, res) => {
     await pool.query(createLoginTable);
 
 
-    res.send('✅ Tables created: Profile_Detail, Skill, Education, Project, Experience, SocialMedia, Login');
+    // res.send('✅ Tables created: Profile_Detail, Skill, Education, Project, Experience, SocialMedia, Login');
+    res.redirect('/');
   } catch (err) {
     console.error('❌ Error creating tables:', err);
     res.status(500).send('Error creating one or more tables.');
@@ -179,7 +180,7 @@ app.post('/register', async (req, res) => {
     await pool.query('INSERT INTO Login_User (username, password, authcode) VALUES ($1, $2, $3)', [username, password, hashedPassword]);
 
     // Step 4: Respond with success message
-    res.status(201).send('Registration successful!');
+    // res.status(201).send('Registration successful!');
     res.redirect('/login');
   } catch (err) {
     console.error(err);
