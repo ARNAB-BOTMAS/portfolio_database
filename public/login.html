@@ -93,6 +93,13 @@
     window.location.replace("/"); // change to your actual page
   }
 
+  window.onload = function () {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("success") === "true") {
+      alert("Registration successful! Please log in.");
+    }
+  };
+
   async function handleLogin(event) {
     event.preventDefault();
 

@@ -170,7 +170,8 @@ app.post('/register', async (req, res) => {
     // Step 1: Check if username already exists
     const existingUser = await pool.query('SELECT * FROM Login_User WHERE username = $1', [username]);
     if (existingUser.rows.length > 0) {
-      return res.status(400).send('Username already exists');
+      // return res.status(400).send('Username already exists');
+      return res.redirect('/register?error=Username already exists');
     }
 
     // Step 2: Hash the password
@@ -181,10 +182,10 @@ app.post('/register', async (req, res) => {
 
     // Step 4: Respond with success message
     // res.status(201).send('Registration successful!');
-    res.redirect('/login');
+    res.redirect('/login?success=true');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error registering user');
+    return res.redirect('/register?error=Error registering user');
   }
 });
 

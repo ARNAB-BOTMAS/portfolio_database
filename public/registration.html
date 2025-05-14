@@ -91,6 +91,13 @@
         function handleLogin() {
             window.location.replace("/login");
         }
+
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get("error")) {
+                alert(params.get("error"));
+            }
+        };
     </script>
 </body>
 </html>
