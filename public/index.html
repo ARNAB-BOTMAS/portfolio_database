@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio Overview</title>
-  <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
 
@@ -20,12 +20,14 @@
     <button onclick="loadSection('education')">Show Education</button>
     <button onclick="loadSection('projects')">Show Projects</button>
     <button onclick="loadSection('experience')">Show Experience</button>
+    <button onclick="loadSection('social')">Show Socials</button> <!-- New Button -->
   </nav>
 
   <div class="section" id="skills"></div>
   <div class="section" id="education"></div>
   <div class="section" id="projects"></div>
   <div class="section" id="experience"></div>
+  <div class="section" id="social"></div> <!-- New Section -->
 
   <!-- Add/Edit Modal -->
   <div id="addModal" class="modal">
@@ -58,7 +60,8 @@
     </div>
   </div>
 
-    <script src="script.js"></script>
-
+  <script src="script.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>

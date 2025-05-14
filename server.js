@@ -1,8 +1,12 @@
+require('dotenv').config();
 const express = require('express');
+// const cors = require('cors');
+const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 
 const app = express();
 app.use(express.json()); // This is essential
+app.use(express.urlencoded({ extended: true }));
 const port = 3000;
 app.use(express.static("public"));
 
@@ -76,19 +80,113 @@ app.get('/create', async (req, res) => {
     );
   `;
 
+  // Social Media Table
+  const createSocialMediaTable = `
+    CREATE TABLE IF NOT EXISTS SocialMedia (
+      id SERIAL PRIMARY KEY,
+      media_name VARCHAR(255) NOT NULL,
+      media_link TEXT NOT NULL,
+      media_logo TEXT
+    );
+  `;
+
+  // Login Table
+  const createLoginTable = `
+    CREATE TABLE IF NOT EXISTS Login_User (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(255) UNIQUE NOT NULL,
+      password TEXT NOT NULL,
+      authcode TEXT
+    );
+  `;
+
+// Add inside the try block
+
+
+
   try {
     await pool.query(createProfileDetailTable);
     await pool.query(createSkillTable);
     await pool.query(createEducationTable);
     await pool.query(createProjectTable);
     await pool.query(createExperienceTable);
+    await pool.query(createSocialMediaTable);
+    await pool.query(createLoginTable);
 
-    res.send('✅ Tables created: Profile_Detail, Skill, Education, Project, Experience.');
+
+    res.send('✅ Tables created: Profile_Detail, Skill, Education, Project, Experience, SocialMedia, Login');
   } catch (err) {
     console.error('❌ Error creating tables:', err);
     res.status(500).send('Error creating one or more tables.');
   }
 });
+
+app.get('/login', (req, res) => {
+  res.sendFile('login.html', { root: __dirname + '/public' });
+});
+
+// Login Route
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Step 1: Find the user by username
+    const userRes = await pool.query('SELECT * FROM Login_User WHERE username = $1', [username]);
+
+    // Step 2: If the user doesn't exist, return an error
+    if (userRes.rows.length === 0) {
+      return res.status(400).send('User not found');
+    }
+
+    const user = userRes.rows[0];
+
+    // Step 3: Compare the password with the stored hashed password
+    const isMatch = await bcrypt.compare(password, user.authcode);
+
+    // Step 4: If password doesn't match, return an error
+    if (!isMatch) {
+      return res.status(400).send('Invalid password');
+    }
+
+    // Step 5: If credentials are correct, return success and set a flag
+    res.json({ message: 'Login successful!', isLogin: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error logging in');
+  }
+});
+
+
+
+app.get('/register', (req, res) => {
+    res.sendFile('registration.html', { root: __dirname + '/public' });
+});
+
+app.post('/register', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Step 1: Check if username already exists
+    const existingUser = await pool.query('SELECT * FROM Login_User WHERE username = $1', [username]);
+    if (existingUser.rows.length > 0) {
+      return res.status(400).send('Username already exists');
+    }
+
+    // Step 2: Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Step 3: Insert the new user into the database
+    await pool.query('INSERT INTO Login_User (username, password, authcode) VALUES ($1, $2, $3)', [username, password, hashedPassword]);
+
+    // Step 4: Respond with success message
+    res.status(201).send('Registration successful!');
+    res.redirect('/login');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error registering user');
+  }
+});
+
 
 // POST DATA TO THE DATA BASE
 // 🔹 Route: Add Profile
@@ -170,6 +268,23 @@ app.post('/add/experience', async (req, res) => {
   }
 });
 
+// 🔹 Route: Add SocialMedia
+app.post('/add/social', async (req, res) => {
+  const { media_name, media_link, media_logo } = req.body;
+  try {
+    await pool.query(
+      `INSERT INTO SocialMedia (media_name, media_link, media_logo)
+       VALUES ($1, $2, $3)`,
+      [media_name, media_link, media_logo]
+    );
+    res.send('✅ Social media added successfully.');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('❌ Failed to add social media.');
+  }
+});
+
+
 // GET DATA FROM DATE BASE
 // 🔹 Get all profile details
 app.get('/profile', async (req, res) => {
@@ -226,6 +341,17 @@ app.get('/experience', async (req, res) => {
   }
 });
 
+app.get('/social', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM SocialMedia');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('❌ Failed to fetch social media.');
+  }
+});
+
+
 // Delete Profile
 app.delete('/delete/profile/:id', async (req, res) => {
   try {
@@ -281,6 +407,17 @@ app.delete('/delete/experience/:id', async (req, res) => {
   }
 });
 
+app.delete('/delete/social/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM SocialMedia WHERE id = $1', [req.params.id]);
+    res.send('🗑️ Social media deleted.');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('❌ Failed to delete social media.');
+  }
+});
+
+
 // Update Profile
 app.put('/edit/profile/:id', async (req, res) => {
   const { name, profile_picture, about_me, position, email, address, resume_link, about_me_picture } = req.body;
@@ -331,6 +468,7 @@ app.put('/edit/education/:id', async (req, res) => {
   }
 });
 
+
 // Update Project
 app.put('/edit/project/:id', async (req, res) => {
   const { project_title, project_description, background, project_link } = req.body;
@@ -365,6 +503,21 @@ app.put('/edit/experience/:id', async (req, res) => {
   }
 });
 
+app.put('/edit/social/:id', async (req, res) => {
+  const { media_name, media_link, media_logo } = req.body;
+  try {
+    await pool.query(
+      `UPDATE SocialMedia SET 
+        media_name=$1, media_link=$2, media_logo=$3 
+       WHERE id=$4`,
+      [media_name, media_link, media_logo, req.params.id]
+    );
+    res.send('✏️ Social media updated.');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('❌ Failed to update social media.');
+  }
+});
 
 
 app.listen(port, () => {

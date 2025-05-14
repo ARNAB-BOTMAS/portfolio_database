@@ -113,7 +113,7 @@ body {
       height: 100%;
       overflow: auto;
       background-color: rgba(0,0,0,0.4);
-      padding-top: 60px;
+      padding: 60px;
     }
 
     .modal-content {
@@ -142,7 +142,7 @@ body {
 
     .form-input {
       margin-bottom: 10px;
-      width: 100%;
+      width: 95%;
       padding: 8px;
       font-size: 16px;
       border-radius: 4px;
