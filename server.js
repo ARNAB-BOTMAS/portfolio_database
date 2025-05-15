@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-// const cors = require('cors');
+const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 
@@ -9,6 +9,7 @@ app.use(express.json()); // This is essential
 app.use(express.urlencoded({ extended: true }));
 const port = 3000;
 app.use(express.static("public"));
+app.use(cors());
 
 // PostgreSQL connection
 const pool = new Pool({
