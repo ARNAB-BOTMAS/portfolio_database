@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json()); // This is essential
 app.use(express.urlencoded({ extended: true }));
 const port = 3000;
-app.use(express.static("../public"));
+app.use(express.static("public"));
 app.use(cors());
 
 // PostgreSQL connection
