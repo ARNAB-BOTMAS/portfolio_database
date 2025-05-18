@@ -31,7 +31,8 @@ app.get('/', async (req, res) => {
       email VARCHAR(255),
       address TEXT,
       resume_link TEXT,
-      about_me_picture TEXT
+      about_me_picture TEXT,
+      phone_number TEXT
     );
   `;
 
@@ -194,12 +195,12 @@ app.post('/register', async (req, res) => {
 // POST DATA TO THE DATA BASE
 // 🔹 Route: Add Profile
 app.post('/add/profile', async (req, res) => {
-  const { name, profile_picture, about_me, position, email, address, resume_link, about_me_picture } = req.body;
+  const { name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, phone_number } = req.body;
   try {
     await pool.query(
-      `INSERT INTO Profile_Detail (name, profile_picture, about_me, position, email, address, resume_link, about_me_picture)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-      [name, profile_picture, about_me, position, email, address, resume_link, about_me_picture]
+      `INSERT INTO Profile_Detail (name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, phone_number)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+      [name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, phone_number]
     );
     res.send('✅ Profile added successfully.');
   } catch (err) {
@@ -423,13 +424,13 @@ app.delete('/delete/social/:id', async (req, res) => {
 
 // Update Profile
 app.put('/edit/profile/:id', async (req, res) => {
-  const { name, profile_picture, about_me, position, email, address, resume_link, about_me_picture } = req.body;
+  const { name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, phone_number } = req.body;
   try {
     await pool.query(
       `UPDATE Profile_Detail SET 
-        name=$1, profile_picture=$2, about_me=$3, position=$4, email=$5, address=$6, resume_link=$7, about_me_picture=$8 
-       WHERE id=$9`,
-      [name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, req.params.id]
+        name=$1, profile_picture=$2, about_me=$3, position=$4, email=$5, address=$6, resume_link=$7, about_me_picture=$8, phone_number=$9
+       WHERE id=$10`,
+      [name, profile_picture, about_me, position, email, address, resume_link, about_me_picture, phone_number, req.params.id]
     );
     res.send('✏️ Profile updated.');
   } catch (err) {

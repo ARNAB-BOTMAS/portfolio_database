@@ -22,6 +22,7 @@ window.onload = async () => {
             <div class="profile-text">
                 <h2>${profile.name}</h2>
                 <p><strong>Position:</strong> ${profile.position}</p>
+                <p><strong>Phone:</strong> ${profile.phone_number}</p>
                 <p><strong>Email:</strong> ${profile.email}</p>
                 <p><strong>Address:</strong> ${profile.address}</p>
                 <p><strong>About Me:</strong> ${profile.about_me}</p>
@@ -59,10 +60,16 @@ function closeProfileModal() {
 
 document.getElementById('profileForm').addEventListener('submit', async function (e) {
     e.preventDefault();
+
+    const phone = e.target.phone_number.value;
+    if (!/^\d{10}$/.test(phone)) {
+        alert("Please enter a valid 10-digit phone number.");
+        return;
+    }
+
     const formData = {};
-    const form = e.target;
-    ['name', 'position', 'email', 'address', 'about_me', 'resume_link', 'profile_picture', 'about_me_picture'].forEach(field => {
-        formData[field] = form[field].value;
+    ['name', 'position', 'email', 'address', 'about_me', 'resume_link', 'profile_picture', 'about_me_picture', 'phone_number'].forEach(field => {
+        formData[field] = e.target[field].value;
     });
 
     try {
@@ -75,7 +82,7 @@ document.getElementById('profileForm').addEventListener('submit', async function
         if (res.ok) {
             alert("Profile updated successfully.");
             closeProfileModal();
-            window.onload(); // reload profile
+            window.onload();
         } else {
             alert("Failed to update profile.");
         }
@@ -84,6 +91,7 @@ document.getElementById('profileForm').addEventListener('submit', async function
         alert("Error updating profile.");
     }
 });
+
 
 async function loadSection(type) {
     const allSections = ['skills', 'education', 'projects', 'experience', 'social'];
