@@ -390,7 +390,7 @@ app.delete('/delete/education/:id', async (req, res) => {
 });
 
 // Delete Project
-app.delete('/delete/project/:id', async (req, res) => {
+app.delete('/delete/projects/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM Project WHERE id = $1', [req.params.id]);
     res.send('🗑️ Project deleted.');
@@ -474,7 +474,7 @@ app.put('/edit/education/:id', async (req, res) => {
 
 
 // Update Project
-app.put('/edit/project/:id', async (req, res) => {
+app.put('/edit/projects/:id', async (req, res) => {
   const { project_title, project_description, background, project_link } = req.body;
   try {
     await pool.query(
